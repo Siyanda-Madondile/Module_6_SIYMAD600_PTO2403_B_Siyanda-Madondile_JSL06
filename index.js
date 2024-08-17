@@ -1,68 +1,78 @@
-// Array of song objects. Add at least 5 songs with title, artist, and genre properties.
-const songs = [
-    { title: "Hooked on a Feeling", artist: "Blue Swede", genre: "Pop" },
-    { title: "Moonage Daydream", artist: "David Bowie", genre: "Rock" },
-    { title: "I Want You Back", artist: "The Jackson 5", genre: "Pop" },
-    { title: "Spirit in the Sky", artist: "Norman Greenbaum", genre: "Rock" },
-    { title: "Cherry Bomb", artist: "The Runaways", genre: "Rock" },
-    { title: "Escape (The Piña Colada Song)", artist: "Rupert Holmes", genre: "Pop" },
-    { title: "O-O-H Child", artist: "The Five Stairsteps", genre: "R&B" },
-    { title: "Ain't No Mountain High Enough", artist: "Marvin Gaye & Tammi Terrell", genre: "R&B" },
-    { title: "Come and Get Your Love", artist: "Redbone", genre: "Rock" },
-    { title: "I'm Not in Love", artist: "10cc", genre: "Pop" },
-    { title: "Fooled Around and Fell in Love", artist: "Elvin Bishop", genre: "Rock" },
-    { title: "abracadabra", artist: "steve miller band", genre:"Rock" },
-    { title: "Youth8500", artist: "DROIDS OSAKA", genre: "Rock"},
-    { title: "White Lights", artist: "Me My Head", genre: "Rock"},
-    { title: "Sway", artist: "Anita Kelsey", genre: "Pop" },
-    { title: "The Night Has A Thousand Eyes", artist: "Anita Kelsey", genre:"Pop"}
-];
-
-// Object containing each Guardian's preferred genre
-const guardians = {
-    "Star-Lord": "Rock",
-    "Gamora": "Pop",
-    "Drax": "Rock",
-    "Rocket": "Rock",
-    "Groot": "Pop"
+// Sample menu data (Consider fetching this data from a server in a real-world scenario)
+const menuData = {
+    Starters: ["Garlic Bread", "Bruschetta"],
+    MainCourses: ["Margherita Pizza", "Spaghetti Carbonara"],
+    Desserts: ["Tiramisu", "Cheesecake"]
 };
 
-// Function to generate playlist based on preferred genre
-function generatePlaylist(guardians, songs) {
-    const playlists = [];
+// Function to display menu items by category
+function displayMenuItems(menu) {
+    // Get the menu container element from the HTMLconst
+    const menuTag = document.getElementById("menu");
 
-    for (const key in guardians) {
-        const genre = guardians[key];
-        // filters out non matching genres
-        const playlist = songs.filter(song => song.genre === genre);
-        
-        playlists.push({guardian: key, playlist: playlist,});
+    // Loop through each category and its items in the menu object
+    for (const category in menu) {
+
+        // creates the menu category title
+        const title = document.createElement("h3");
+        title.textContent = category;
+        menuTag.appendChild(title);
+
+
+        // create list of each menu item in the catergory
+        const list = document.createElement("ul");
+
+        // creates all list items
+        const listItems = menu[category].map(item => {
+            const listItem = document.createElement("li");
+            listItem.textContent = item
+
+            listItem.addEventListener("click", () => {
+                addToOrder(item);
+            });
+
+            return listItem;
+        });
+
+        list.append(...listItems);
+
+        // attach list items as a chuck to improver performance
+        menuTag.appendChild(list);
     }
-
-    // gets playlistTag 
-    const playlistTag = document.getElementById("playlists");
-
-    // maps playlists into divs for each guardian with there prefered genres
-    playlists.map(playlist =>{
-
-        const playlistDiv = document.createElement("div");
-        playlistDiv.classList.add("playlist");
-        
-        playlistDiv.innerHTML = `
-            <h2>${playlist.guardian}</h2>
-
-            ${playlist.playlist.map(song => 
-                `<p class="song">
-                    <span class="song-title">${song.title}</span> - ${song.artist}
-                </p>`
-            ).join("")}
-        `;
-        
-        playlistTag.appendChild(playlistDiv);
-    })
+          
 }
 
-// Call generatePlaylist and display the playlists for each Guardian
-generatePlaylist(guardians, songs);
+// Callback function for adding an item to the order
+function addToOrder(itemName) {
+    // Get the order items list and the order total element from the HTML
+    const orderTag = document.getElementById('order-items');
+
+    let listItems = orderTag.children;
 
 
+    const newItem = document.createElement("li");
+    newItem.textContent = itemName;
+
+    // Create a list item for the order
+    if (listItems.length > 0) {
+        listItems = [...listItems, newItem];
+    }else {
+        listItems = [newItem];
+    }
+
+
+    orderTag.append(...listItems);
+
+    let total = 60 * listItems.length;
+
+    document.getElementById("order-total").textContent = total;
+}
+
+// Function to initialize the menu system
+function initMenuSystem(menu) {
+    // Call the function to display menu items
+    displayMenuItems(menu);
+}
+
+// Start the menu system by calling the init function
+initMenuSystem(menuData);
